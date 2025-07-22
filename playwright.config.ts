@@ -8,8 +8,8 @@ const config: PlaywrightTestConfig = {
     viewport: { width: 1280, height: 720 },
     actionTimeout: 15000, // timeout for playwright actions (fill, click, etc.)
     ignoreHTTPSErrors: true,
-    video: 'off',
-    screenshot: 'off'
+    video: 'retain-on-failure',
+    screenshot: 'only-on-failure'
   },
   projects: [
     {

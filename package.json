@@ -4,11 +4,13 @@
   "description": "learn playwright testing",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "tests:chrome": "playwright test --config=playwright.config.ts --project=Chromium",
+    "tests:firefox": "playwright test --config=playwright.config.ts --project=Firefox",
+    "tests:webkit": "playwright test --config=playwright.config.ts --project=Webkit"
   },
   "author": "sam sorensen",
   "license": "ISC",
-  "dependencies": {
+  "dependencies": { 
     "@playwright/test": "^1.54.1",
     "prettier": "^3.6.2"
   }

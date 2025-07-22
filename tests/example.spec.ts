@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test'
+import { loadHomePage, assertTitle } from '../helpers'
 
 test('Simple basic test', async ({ page }) => {
   await page.goto('https://www.example.com/')
@@ -34,7 +35,7 @@ test.skip('Selectors', async ({ page }) => {
   await page.click('//button')
 })
 
-test.describe("First test suite", () => {
+test.describe.parallel("First test suite", () => {
 
   test("Working with Inputs", async ({ page }) => {
     await page.goto('http://zero.webappsecurity.com/index.html')
@@ -64,13 +65,24 @@ test.describe("First test suite", () => {
 
 })
 
-test.only('Screenshots', async ({ page }) => {
-  await page.goto('https://example.com/')
-  await page.screenshot({ path: 'screenshots/screenshot.png', fullPage: true })
+test.describe.parallel('Hooks', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('https://www.example.com/')
+  })
+  
+  test('Screenshots', async ({ page }) => {
+    await page.screenshot({ path: 'screenshots/screenshot.png', fullPage: true })
+  })
+
+  test('Single element screenshot', async ({ page }) => {
+    const element = await page.locator('h1')
+    await element.screenshot({ path: 'screenshots/elementScreenshot.png' })
+  })
 })
 
-test.only('Single element screenshot', async ({ page }) => {
-  await page.goto('https://example.com/')
-  const element = await page.locator('h1')
-  await element.screenshot({ path: 'screenshots/elementScreenshot.png' })
+test('Custom helpers', async ({ page }) => {
+  await loadHomePage(page)
+  await page.pause()  
+  await assertTitle(page)
 })
+
