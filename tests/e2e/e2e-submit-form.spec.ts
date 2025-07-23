@@ -1,39 +1,28 @@
 import { test, expect } from '@playwright/test'
+import { FeedbackPage } from '../../page-objects/FeedbackPage'
+import { HomePage } from '../../page-objects/HomePage'
 
 test.describe.parallel('Submit Feedback Form', () => {
+  let feedbackPage: FeedbackPage
+  let homePage: HomePage
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://zero.webappsecurity.com/index.html')
-    await page.click('#feedback')
+    feedbackPage = new FeedbackPage(page)
+    homePage = new HomePage(page)
+
+    await homePage.visit()
+    await homePage.clickOnFeedbackLink()
   })
 
   test('Reset feedback form', async ({ page }) => {
-    await page.fill('#name', 'Johne Doe')
-    await page.fill('#email', 'john.doe@example.com')
-    await page.fill('#subject', 'Test Subject')
-    await page.fill('#comment', 'Test Comment')
-
-    await page.click('input[name="clear"]')
-    const nameInput = await page.locator('#name')
-    const emailInput = await page.locator('#email')
-    const subjectInput = await page.locator('#subject')
-    const commentInput = await page.locator('#comment')
-
-    await expect(nameInput).toBeEmpty()
-    await expect(emailInput).toBeEmpty()
-    await expect(subjectInput).toBeEmpty()
-    await expect(commentInput).toBeEmpty()
+    await feedbackPage.fillFeedbackForm('Johne Doe', 'john.doe@example.com', 'Test Subject', 'Test Comment')
+    await feedbackPage.resetFeedbackForm()
+    await feedbackPage.assertFeedbackFormReset()
   })
 
   test('Submit feedback form', async ({ page }) => {
-    await page.fill('#name', 'Johne Doe')
-    await page.fill('#email', 'john.doe@example.com')
-    await page.fill('#subject', 'Test Subject')
-    await page.fill('#comment', 'Test Comment')
-
-    await page.click('input[name="submit"]')
-
-    await page.waitForSelector('.offset3.span6')
-    const thankYouMessage = await page.locator('.offset3.span6')
-    await expect(thankYouMessage).toContainText('Thank you for your comments, Johne Doe.')
+    await feedbackPage.fillFeedbackForm('Johne Doe', 'john.doe@example.com', 'Test Subject', 'Test Comment')
+    await feedbackPage.submitFeedbackForm()
+    await feedbackPage.assertFeedbackFormSent()
   })
 })

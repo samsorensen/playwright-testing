@@ -1,20 +1,26 @@
 import { test, expect } from '@playwright/test'
+import { HomePage } from '../../page-objects/HomePage'
+import { LoginPage } from '../../page-objects/LoginPage'
+import { Navbar } from '../../page-objects/components/Navbar'
 
 test.describe.parallel('Pay Bills', () => {
+  let homePage: HomePage
+  let loginPage: LoginPage
+  let navbar: Navbar
+
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://zero.webappsecurity.com/index.html')
-
-    await page.click('#signin_button')
-    await page.fill('#user_login', 'username')
-    await page.fill('#user_password', 'password')
-    await page.click('text=Sign in')
-
-    await page.waitForTimeout(200)
-    await page.goto('http://zero.webappsecurity.com/bank/transfer-funds.html')
+    homePage = new HomePage(page)
+    loginPage = new LoginPage(page)
+    navbar = new Navbar(page)
+    
+    await homePage.visit()
+    await homePage.clickOnSignIn()
+    await loginPage.login('username', 'password')
   })
 
   test.only('Pay Bills', async ({ page }) => {
-    await page.click('#pay_bills_tab')
+    await navbar.clickOnTab('Pay Bills')
+
     await page.click('text=Purchase Foreign Currency')
 
     await page.selectOption('#pc_currency', 'Australia (dollar)')
